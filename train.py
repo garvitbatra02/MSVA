@@ -204,6 +204,7 @@ class TrainingObj:
             if(bool(np.array(files_feature[i].split("/")[-1][:-4])==key)):
                 return i
     def train(self,cmb, output_dir='results'):
+        # print(cmb)
         print("Initializing model and optimizer for Feature Combination: ",cmb)
         self.model.train()
         criterion = nn.MSELoss()
@@ -251,13 +252,19 @@ class TrainingObj:
 #                visFeaturesSize = self.feat_input["feature_size"]
                 visFeaturesSize = self.feat_input.feature_size
                 target = np.load(os.path.join(base_add_targets,fileName+".npy"))
+
+                # print("seq1",seq1.shape)
+                # print("seq2",seq2.shape)
+                # print("seq3",seq3.shape)
+
+
                 if(self.params_obj.sample_technique=="up"):
-                    seq1 = cv2.resize(seq1, (seq1.shape[1],maxShape), interpolation = cv2.INTER_AREA)
+                    seq1 = cv2.resize(seq1, (1024,maxShape), interpolation = cv2.INTER_AREA)
                     seq2 = cv2.resize(seq2, (seq2.shape[1],maxShape), interpolation = cv2.INTER_AREA)
                     seq3 = cv2.resize(seq3, (seq3.shape[1],maxShape), interpolation = cv2.INTER_AREA)
                     target =  np.load(os.path.join(base_add_targets,fileName+".npy"))
                 if(self.params_obj.sample_technique=="sub"):
-                    seq1 = cv2.resize(seq1, (seq1.shape[1],minShape), interpolation = cv2.INTER_AREA)
+                    seq1 = cv2.resize(seq1, (1024,minShape), interpolation = cv2.INTER_AREA)
                     seq2 = cv2.resize(seq2, (seq2.shape[1],minShape), interpolation = cv2.INTER_AREA)
                     seq3 = cv2.resize(seq3, (seq3.shape[1],minShape), interpolation = cv2.INTER_AREA)
                     target = dataset['gtscore'][...]
@@ -286,6 +293,9 @@ class TrainingObj:
                         seq2 = seq2.float().cuda()
                         seq3 = seq3.float().cuda()
                     seq_len = seq1.shape[1]
+                    # print("seq1",seq1.shape)
+                    # print("seq2",seq2.shape)
+                    # print("seq3",seq3.shape)
                     if(self.params_obj.fusion_technique=="inter"):
                         y, _ = self.model([seq1,seq2,seq3],seq_len) # for three source of feature Xo, Xr, Xf
                     elif(self.params_obj.fusion_technique=="late"):
@@ -350,12 +360,15 @@ class TrainingObj:
                 fileName = files_feature_rgb[idx].split(os.path.sep)[-1].split('.')[0]
 #                visFeaturesSize = self.feat_input["feature_size"]
                 visFeaturesSize = self.feat_input.feature_size
+                # print("seq1",seq1.shape)
+                # print("seq2",seq2.shape)
+                # print("seq3",seq3.shape)
                 if(self.params_obj.sample_technique=="up"):
-                    seq1 = cv2.resize(seq1, (seq1.shape[1],maxShape), interpolation = cv2.INTER_AREA)
+                    seq1 = cv2.resize(seq1, (1024,maxShape), interpolation = cv2.INTER_AREA)
                     seq2 = cv2.resize(seq2, (seq2.shape[1],maxShape), interpolation = cv2.INTER_AREA)
                     seq3 = cv2.resize(seq3, (seq3.shape[1],maxShape), interpolation = cv2.INTER_AREA)
                 if(self.params_obj.sample_technique=="sub"):
-                    seq1 = cv2.resize(seq1, (seq1.shape[1],minShape), interpolation = cv2.INTER_AREA)
+                    seq1 = cv2.resize(seq1, (1024,minShape), interpolation = cv2.INTER_AREA)
                     seq2 = cv2.resize(seq2, (seq2.shape[1],minShape), interpolation = cv2.INTER_AREA)
                     seq3 = cv2.resize(seq3, (seq3.shape[1],minShape), interpolation = cv2.INTER_AREA)
                     target = dataset['gtscore'][...]
